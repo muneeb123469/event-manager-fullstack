@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import { NeonAuthUIProvider, UserButton } from "@neondatabase/auth/react";
+import { authClient } from "@/lib/auth/client";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,28 +26,36 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
+        suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} min-h-full flex flex-col bg-[var(--background)] text-[var(--foreground)]`}
       >
-        <header className="border-b border-[var(--border)] px-6 py-4">
-          <div className="mx-auto flex max-w-5xl items-center justify-between">
-            <Link href="/" className="text-lg font-semibold">
-              Event Planner
-            </Link>
-            <nav>
-              <Link
-                href="/dashboard"
-                className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
-              >
-                Dashboard
+        <NeonAuthUIProvider
+          authClient={authClient}
+          defaultTheme="dark"
+          emailOTP
+        >
+          <header className="border-b border-[var(--border)] px-6 py-4">
+            <div className="mx-auto flex max-w-5xl items-center justify-between">
+              <Link href="/" className="text-lg font-semibold">
+                Event Planner
               </Link>
-            </nav>
-          </div>
-        </header>
-        <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-6 py-8">
-          {children}
-        </main>
+              <nav className="flex items-center gap-4">
+                <Link
+                  href="/dashboard"
+                  className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+                >
+                  Dashboard
+                </Link>
+                <UserButton size={32} />
+              </nav>
+            </div>
+          </header>
+          <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-6 py-8">
+            {children}
+          </main>
+        </NeonAuthUIProvider>
       </body>
     </html>
   );
