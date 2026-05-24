@@ -53,7 +53,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} min-h-full flex flex-col bg-[var(--background)] text-[var(--foreground)]`}
       >
         <NeonAuthUIProvider
-          authClient={authClient}
+          authClient={authClient as any}
           defaultTheme="dark"
           emailOTP
         >
