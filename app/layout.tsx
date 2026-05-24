@@ -1,3 +1,5 @@
+import { UserButton } from "@neondatabase/auth/react";
+import { Providers } from "./providers";
 import type { Metadata } from "next";
 import {
   Geist,
@@ -7,8 +9,6 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
-import { NeonAuthUIProvider, UserButton } from "@neondatabase/auth/react";
-import { authClient } from "@/lib/auth/client";
 import { cn } from "@/lib/utils";
 
 const playfairDisplayHeading = Playfair_Display({
@@ -52,11 +52,7 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} min-h-full flex flex-col bg-[var(--background)] text-[var(--foreground)]`}
       >
-        <NeonAuthUIProvider
-          authClient={authClient as any}
-          defaultTheme="dark"
-          emailOTP
-        >
+        <Providers>
           <header className="border-b border-[var(--border)] px-6 py-4">
             <div className="mx-auto flex max-w-5xl items-center justify-between">
               <Link href="/" className="text-lg font-semibold">
@@ -82,7 +78,7 @@ export default function RootLayout({
           <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-6 py-8">
             {children}
           </main>
-        </NeonAuthUIProvider>
+        </Providers>
       </body>
     </html>
   );
