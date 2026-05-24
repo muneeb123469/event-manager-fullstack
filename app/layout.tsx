@@ -1,14 +1,22 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Noto_Sans, Playfair_Display } from "next/font/google";
+import {
+  Geist,
+  Geist_Mono,
+  Noto_Sans,
+  Playfair_Display,
+} from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 import { NeonAuthUIProvider, UserButton } from "@neondatabase/auth/react";
 import { authClient } from "@/lib/auth/client";
 import { cn } from "@/lib/utils";
 
-const playfairDisplayHeading = Playfair_Display({subsets:['latin'],variable:'--font-heading'});
+const playfairDisplayHeading = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-heading",
+});
 
-const notoSans = Noto_Sans({subsets:['latin'],variable:'--font-sans'});
+const notoSans = Noto_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,7 +39,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={cn("font-sans", notoSans.variable, playfairDisplayHeading.variable)}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={cn(
+        "font-sans",
+        notoSans.variable,
+        playfairDisplayHeading.variable,
+      )}
+    >
       <body
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} min-h-full flex flex-col bg-[var(--background)] text-[var(--foreground)]`}
@@ -52,6 +68,12 @@ export default function RootLayout({
                   className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
                 >
                   Dashboard
+                </Link>
+                <Link
+                  href="/account/settings"
+                  className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+                >
+                  Account
                 </Link>
                 <UserButton size={32} />
               </nav>
