@@ -3,8 +3,9 @@ import { getSession } from "@/lib/auth/server";
 import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { createInviteLinkAction } from "@/lib/actions/events";
 
 export default async function EventDetailPage({
   params,
@@ -36,6 +37,12 @@ export default async function EventDetailPage({
   const notGoingCount = event.rsvps.filter(
     (r) => r.status === "not_going",
   ).length;
+
+  const inviteUrl = event.invite?.token
+    ? `${process.env.NEXT_PUBLIC_APP_URL}/invite/${event.invite.token}`
+    : null;
+
+  const createInviteForThisEvent = createInviteLinkAction.bind(null, eventId);
 
   return (
     <div className="flex flex-col gap-6">
@@ -82,13 +89,27 @@ export default async function EventDetailPage({
               Share this link with guests so they can RSVP without creating an
               account.
             </p>
-            <p className="text-sm text-[var(--muted-foreground)]">
-              No invite link generated yet.
-            </p>
+            {inviteUrl ? (
+              <div className="flex flex-col gap-2">
+                <p className="text-sm font-medium break-all bg-[var(--muted)] p-2 rounded">
+                  {inviteUrl}
+                </p>
+                <form action={createInviteForThisEvent}>
+                  <Button type="submit" variant="outline" size="sm">
+                    Regenerate Link
+                  </Button>
+                </form>
+              </div>
+            ) : (
+              <form action={createInviteForThisEvent}>
+                <Button type="submit">Generate Link</Button>
+              </form>
+            )}
           </CardContent>
         </Card>
       )}
 
+      {/* Attendees Table */}
       {/* Attendees Table */}
       <Card>
         <CardHeader>
@@ -100,7 +121,51 @@ export default async function EventDetailPage({
               No RSVPs yet. Share the invite link to get responses.
             </p>
           ) : (
-            <p>{event.rsvps.length} attendees</p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-[var(--border)]">
+                    <th className="text-left py-2 pr-4 font-medium">Name</th>
+                    <th className="text-left py-2 pr-4 font-medium">Email</th>
+                    <th className="text-left py-2 pr-4 font-medium">Status</th>
+                    <th className="text-left py-2 font-medium">Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {event.rsvps.map((rsvp) => (
+                    <tr
+                      key={rsvp.id}
+                      className="border-b border-[var(--border)] last:border-0"
+                    >
+                      <td className="py-2 pr-4">{rsvp.name}</td>
+                      <td className="py-2 pr-4 text-[var(--muted-foreground)]">
+                        {rsvp.email}
+                      </td>
+                      <td className="py-2 pr-4">
+                        <Badge
+                          variant={
+                            rsvp.status === "going"
+                              ? "default"
+                              : rsvp.status === "maybe"
+                                ? "secondary"
+                                : "outline"
+                          }
+                        >
+                          {rsvp.status === "not_going"
+                            ? "Not Going"
+                            : rsvp.status === "going"
+                              ? "Going"
+                              : "Maybe"}
+                        </Badge>
+                      </td>
+                      <td className="py-2 text-[var(--muted-foreground)]">
+                        {new Date(rsvp.respondedAt).toLocaleDateString()}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </CardContent>
       </Card>
