@@ -75,7 +75,7 @@ export default function RootLayout({
                 >
                   Account
                 </Link>
-                <UserButton size={32} />
+                <UserButton size="default" />
               </nav>
             </div>
           </header>
