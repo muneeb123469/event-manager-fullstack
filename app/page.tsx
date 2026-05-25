@@ -1,59 +1,85 @@
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getSession } from "@/lib/auth/server";
 
-export default function Home() {
+export default async function Home() {
+  const session = await getSession();
+  const user = session?.data?.user;
+
   return (
     <div className="flex flex-1 flex-col gap-12">
       {/* Hero Section */}
       <section className="flex flex-col gap-6 py-12">
-        <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
-          Plan events and track RSVPs fast
+        <div className="w-fit rounded-full border border-[var(--border)] px-3 py-1 text-sm text-[var(--muted-foreground)]">
+          Next.js + Neon PostgreSQL + Prisma
+        </div>
+
+        <h1 className="max-w-3xl text-4xl font-semibold tracking-tight md:text-5xl">
+          Plan events and manage RSVPs with shareable invite links
         </h1>
+
         <p className="max-w-2xl text-lg text-[var(--muted-foreground)]">
-          Create events, share a unique invite link, and watch attendee
-          responses come in — Going, Maybe, and Not Going — all in one place.
+          Create events, generate unique invite links, collect guest responses,
+          and manage attendee details from one dashboard.
         </p>
+
         <div className="flex flex-wrap gap-3">
-          <Button>
-            <Link href="/auth/sign-up">Create account</Link>
-          </Button>
-          <Button variant="outline">
-            <Link href="/auth/sign-in">Sign in</Link>
-          </Button>
-          <Button variant="ghost">
-            <Link href="/dashboard">Open dashboard</Link>
-          </Button>
+          {user ? (
+            <>
+              <Button asChild>
+                <Link href="/dashboard">Open dashboard</Link>
+              </Button>
+              <Button variant="outline" asChild>
+                <Link href="/events/new">Create event</Link>
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button asChild>
+                <Link href="/auth/sign-up">Create account</Link>
+              </Button>
+              <Button variant="outline" asChild>
+                <Link href="/auth/sign-in">Sign in</Link>
+              </Button>
+              <Button variant="ghost" asChild>
+                <Link href="/dashboard">Open dashboard</Link>
+              </Button>
+            </>
+          )}
         </div>
       </section>
 
       {/* How it works Section */}
       <section className="flex flex-col gap-6">
         <h2 className="text-2xl font-semibold tracking-tight">How it works</h2>
+
         <div className="grid gap-4 md:grid-cols-3">
           <Card>
             <CardHeader>
-              <div className="text-3xl">📅</div>
-              <CardTitle>1. Create an event</CardTitle>
+              <div className="text-sm font-semibold text-[var(--muted-foreground)]">
+                Step 01
+              </div>
+              <CardTitle>Create an event</CardTitle>
               <CardDescription>
-                Add a title, description, location and date in seconds.
+                Add a title, description, location, and date for your event.
               </CardDescription>
             </CardHeader>
           </Card>
 
           <Card>
             <CardHeader>
-              <div className="text-3xl">🔗</div>
-              <CardTitle>2. Share invite link</CardTitle>
+              <div className="text-sm font-semibold text-[var(--muted-foreground)]">
+                Step 02
+              </div>
+              <CardTitle>Share invite link</CardTitle>
               <CardDescription>
-                Generate a unique link and send it to guests via WhatsApp,
+                Generate a unique link and send it to guests through WhatsApp,
                 email, or any platform.
               </CardDescription>
             </CardHeader>
@@ -61,11 +87,12 @@ export default function Home() {
 
           <Card>
             <CardHeader>
-              <div className="text-3xl">✅</div>
-              <CardTitle>3. Track RSVPs</CardTitle>
+              <div className="text-sm font-semibold text-[var(--muted-foreground)]">
+                Step 03
+              </div>
+              <CardTitle>Track responses</CardTitle>
               <CardDescription>
-                See who is Going, Maybe, or Not Going in real time from your
-                dashboard.
+                View who is Going, Maybe, or Not Going from the event dashboard.
               </CardDescription>
             </CardHeader>
           </Card>
@@ -75,13 +102,14 @@ export default function Home() {
       {/* Features Section */}
       <section className="flex flex-col gap-6">
         <h2 className="text-2xl font-semibold tracking-tight">Features</h2>
+
         <div className="grid gap-4 md:grid-cols-2">
           <Card>
             <CardHeader>
               <CardTitle>No account needed for guests</CardTitle>
               <CardDescription>
-                Guests can RSVP using just their name and email — no sign up
-                required.
+                Guests can RSVP using only their name and email. They do not
+                need to create an account.
               </CardDescription>
             </CardHeader>
           </Card>
@@ -90,17 +118,17 @@ export default function Home() {
             <CardHeader>
               <CardTitle>Secure authentication</CardTitle>
               <CardDescription>
-                Event owners sign in securely via Neon Auth with email OTP
-                support.
+                Event owners can sign up, sign in, and access protected pages
+                using Neon Auth.
               </CardDescription>
             </CardHeader>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Real-time attendee list</CardTitle>
+              <CardTitle>Attendee management</CardTitle>
               <CardDescription>
-                View a live table of all RSVPs with name, email, status and
+                View RSVP records with guest name, email, attendance status, and
                 response date.
               </CardDescription>
             </CardHeader>
@@ -111,7 +139,7 @@ export default function Home() {
               <CardTitle>Shareable invite links</CardTitle>
               <CardDescription>
                 Each event gets a unique token-based invite URL that can be
-                regenerated anytime.
+                regenerated when needed.
               </CardDescription>
             </CardHeader>
           </Card>
@@ -119,20 +147,36 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="flex flex-col gap-4 py-8 border-t border-[var(--border)]">
+      <section className="flex flex-col gap-4 border-t border-[var(--border)] py-8">
         <h2 className="text-2xl font-semibold tracking-tight">
           Ready to plan your first event?
         </h2>
+
         <p className="text-[var(--muted-foreground)]">
-          Create a free account and get started in minutes.
+          Create an account, set up your event, and start collecting RSVPs in
+          minutes.
         </p>
+
         <div className="flex flex-wrap gap-3">
-          <Button>
-            <Link href="/auth/sign-up">Get started free</Link>
-          </Button>
-          <Button variant="outline">
-            <Link href="/dashboard">View dashboard</Link>
-          </Button>
+          {user ? (
+            <>
+              <Button asChild>
+                <Link href="/events/new">Create event</Link>
+              </Button>
+              <Button variant="outline" asChild>
+                <Link href="/dashboard">View dashboard</Link>
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button asChild>
+                <Link href="/auth/sign-up">Get started free</Link>
+              </Button>
+              <Button variant="outline" asChild>
+                <Link href="/auth/sign-in">Sign in</Link>
+              </Button>
+            </>
+          )}
         </div>
       </section>
     </div>
