@@ -175,7 +175,6 @@ Important production environment variables must be added in Vercel before deploy
 
 ---
 
-```md
 ## Screenshots
 
 ### Landing Page
@@ -212,7 +211,7 @@ Important production environment variables must be added in Vercel before deploy
 
 ### Account Settings
 
-## ![Account Settings](screenshots/setting.png)
+![Account Settings](screenshots/setting.png)
 
 ## Future Improvements
 
@@ -237,3 +236,7 @@ GitHub: https://github.com/muneeb123469
 
 This project is open-source and available under the MIT License.
 ```
+
+
+
+
